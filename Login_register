@@ -1,0 +1,91 @@
+import string
+import time
+import random
+def generate_password(): #generating the password, user will be asked while registering.
+    characters = string.ascii_letters + string.digits
+    Password = ''.join(random.choice(characters) for _ in range(8))
+    return Password
+#registerting the new user. First the username will be chekced if it is already existed in "accounts.txt". register function is used and will be called while executing the main.
+def register():
+    db = open("accounts.txt", "rt")
+    Username = input("Create username: ")
+    password_choice = input("Do you want to enter your own password? (yes/no): ").lower()
+
+    if password_choice == "yes":
+        Password = input("Enter your password: ")
+    else:
+        Password = print("your new password is : ", generate_password())
+    u = []
+    p = []
+    for i in db:
+        if ":" in i:
+           a, b = i.split(":")
+           b = b.strip()
+           u.append(a)
+           p.append(b)
+        else:
+            print(" ")
+    data = dict(zip(u, p))
+    print(data)
+
+    with open("accounts.txt", "rt") as file:
+        content = file.read()
+        if Username in content:
+            print("User already exists, please login")
+        else:
+            with open("accounts.txt", "a") as file:
+                file.write(f"{Username}:{Password}\n")
+                print("User registered successfully!")
+#register()
+def login(): #defining the login function. User is asked to enter username and password, if the user exist in accounts.txt, if yes, if the username and password matches login successful, else display an error.
+    Username = input("Enter your username: ")
+    Password = input("Enter your password: ")
+    db = open("accounts.txt", "rt")
+    if not len (Username or Password)<1: #username and password should not be less than1 charecters, i.e fields should not be empty.
+        u = []
+        p = []
+        for i in db:
+            if ":" in i:
+                a, b = i.split(":")
+                b = b.strip()
+                u.append(a)
+                p.append(b)
+            else:
+                print(" ")
+        data = dict(zip(u, p))
+        print(data)
+        if Username in data:
+            if Password == data[Username]:
+                print("Login successful")
+            else:
+                print("Incorrect password, please try again.")
+        else:
+            print("Username doesn't exist, please register.")
+
+        db.close()
+
+
+#login()
+
+
+def main(): #defining the main menu, this function executed first.user will be given 3 choices.and the register and login function will be called based on users choice.
+    while True:
+        print("Main Menu:")
+        print("1. Register")
+        print("2. Login")
+        print("3. Exit")
+        choice = input("Select an option: ")
+
+        if choice == "1":
+            register()
+        elif choice == "2":
+            login()
+        elif choice == "3":
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
+
+
